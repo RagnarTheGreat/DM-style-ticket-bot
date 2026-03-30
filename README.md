@@ -16,6 +16,7 @@ Self-hosted **Discord** bot: users **DM the bot** to open support; staff work in
 - [Quick start](#quick-start)
 - [Environment variables](#environment-variables)
 - [Discord app setup](#discord-app-setup)
+- [Domain & HTTPS (your own URL)](#domain--https-your-own-url)
 - [Multi-server setup (public + support)](#multi-server-setup-public--support)
 - [Slash commands](#slash-commands)
 - [Transcripts & privacy](#transcripts--privacy)
@@ -116,6 +117,53 @@ Complete [Discord app setup](#discord-app-setup), invite the bot with **`bot`** 
 
 ---
 
+## Domain & HTTPS (your own URL)
+
+Transcript links and Discord OAuth need a **public HTTPS URL** that points at this app (the Express server on `PORT`). Localhost alone is not enough for other people to open transcripts.
+
+### 1. Point your domain at the server
+
+- In your DNS provider, create an **A** record (or **AAAA** for IPv6) from your hostname (e.g. `tickets.example.com`) to your VPS IP, or use a **CNAME** if your host gives you one (e.g. some PaaS).
+- Wait for DNS to propagate (often minutes, sometimes up to 48h).
+
+### 2. TLS (HTTPS)
+
+- Use **Nginx** or **Caddy** with **Let’s Encrypt**, or put the host behind **Cloudflare** (proxy + “Full (strict)” SSL), or use **Cloudflare Tunnel** if you don’t want to open ports on the machine.
+- Browsers and Discord OAuth require **HTTPS** for production; don’t use plain `http://` for `PUBLIC_BASE_URL` on the public internet.
+
+### 3. Reverse proxy to Node
+
+- The bot listens on **`PORT`** (default `3000`). Configure your proxy so **HTTPS** traffic to `https://tickets.example.com` is forwarded to `http://127.0.0.1:3000` (or whatever `PORT` you set).
+- Keep **WebSocket** not needed for this app — plain HTTP proxy for `/`, `/auth/*`, `/transcript/*`, `/health` is enough.
+
+### 4. Environment variables (must match)
+
+Set in `.env`:
+
+```env
+PUBLIC_BASE_URL=https://tickets.example.com
+DISCORD_REDIRECT_URI=https://tickets.example.com/auth/discord/callback
+PORT=3000
+```
+
+- **No trailing slash** on `PUBLIC_BASE_URL` (the code normalizes transcript URLs).
+- `DISCORD_REDIRECT_URI` must be **exactly** the same string you add in the Discord Developer Portal → **OAuth2** → **Redirects**.
+
+### 5. Discord Developer Portal
+
+- **OAuth2** → **Redirects** → add: `https://tickets.example.com/auth/discord/callback` (your real domain).
+- Save changes. If login fails, compare the URI **character-for-character** with `.env`.
+
+### 6. Optional: `/setup` transcript base URL
+
+If you use a different public URL than `PUBLIC_BASE_URL`, you can pass **`transcript_base_url`** in `/setup` so log embeds use the right domain; otherwise the bot falls back to `PUBLIC_BASE_URL`.
+
+### 7. Restart
+
+Restart the bot after changing `.env` so transcript links and cookies use the new host.
+
+---
+
 ## Multi-server setup (public + support)
 
 Use a **community server** (users) and a **support server** (staff). Set **`GUILD_ID` to the support server** — that is where ticket channels and **`/setup`** live.
@@ -187,7 +235,7 @@ src/
 
 ## License
 
-none
+Add a `LICENSE` file to your repo (e.g. MIT) if you want a standard open-source license. This project does not ship a license by default.
 
 ---
 
