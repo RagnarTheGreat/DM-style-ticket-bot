@@ -2,6 +2,8 @@
 
 Self-hosted **Discord** bot: users **DM the bot** to open support; staff work in a **normal text channel** in your server. Messages relay both ways. Closing a ticket generates a **web transcript** (Discord OAuth + secret URL).
 
+**Repository:** [github.com/RagnarTheGreat/DM-style-ticket-bot](https://github.com/RagnarTheGreat/DM-style-ticket-bot)
+
 **Stack:** Node.js 20+ · [discord.js](https://discord.js.org/) v14 · SQLite ([better-sqlite3](https://github.com/WiseLibs/better-sqlite3)) · [Express](https://expressjs.com/)
 
 ---
@@ -64,8 +66,8 @@ Self-hosted **Discord** bot: users **DM the bot** to open support; staff work in
 ## Quick start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/RagnarTheGreat/DM-style-ticket-bot.git
+cd DM-style-ticket-bot
 npm install
 cp .env.example .env
 ```
@@ -185,7 +187,7 @@ src/
 
 ## License
 
-Add a `LICENSE` file to your repo (e.g. MIT) if you want a standard open-source license. This project does not ship a license by default.
+none
 
 ---
 
