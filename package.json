@@ -1,0 +1,21 @@
+{
+  "name": "dm-modmail-ticketbot",
+  "version": "1.0.0",
+  "description": "Discord DM-first ticket bot with channel tickets and web transcripts.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "discord.js": "^14.19.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "nanoid": "^5.1.5"
+  }
+}
